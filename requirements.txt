@@ -1,0 +1,13 @@
+torch
+transformers>=4.45
+trl
+peft
+datasets
+accelerate
+bitsandbytes
+numpy
+scipy
+scikit-learn
+tqdm
+python-dotenv
+wandb
