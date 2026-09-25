@@ -191,29 +191,6 @@ Credentials are read from a `.env` in the repository root (see `.env.example`).
 Multi-GPU (H100/A100 class) is assumed; the per-token gradient pass is the expensive stage and is
 sharded by index range.
 
-### Hyperparameters
-
-Following the OLMo 3 paper (arXiv:2512.13961) Table 48, "7B Instruct DPO" column, with β scaled for
-TRL's non-length-normalized sigmoid loss.
-
-| Parameter | Value |
-|---|---|
-| Base model | `allenai/Olmo-3-7B-Instruct-SFT` (full fine-tune, bf16) |
-| `max_seq_length` | 2048 |
-| `learning_rate` | `5e-6` |
-| `num_train_epochs` | 1 |
-| `per_device_train_batch_size` / effective | 1 / 128 |
-| `β` | 0.02 |
-| `warmup_ratio` / scheduler / optim | 0.1 / linear / `adamw_8bit` |
-| `GRADIENT_DIRECTION` | `max_weighted_norm1` |
-| `WEIGHT_METHOD` / `WEIGHT_SUM_MODE` | `sigmoid_dot` / `token_scale` |
-| `SIGMOID_SLOPE` / `WEIGHT_TEMPERATURE` | 1.0 / 0.1 |
-
-Gradient accumulation is derived from `EFFECTIVE_BATCH_SIZE / (BATCH_SIZE × num_gpus)` and must divide
-evenly. `OUTPUT_DIR` encodes direction, method, sum-mode, temperature, β and lr so runs cannot collide.
-The tokenizer uses `pad_token = bos_token` (never `eos`) and `padding_side="left"`; no new tokens are
-added. Keep shared hyperparameters in sync across the training scripts — they are the A/B pair.
-
 ---
 
 ## 6. Running
